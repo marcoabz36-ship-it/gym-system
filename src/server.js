@@ -20,17 +20,19 @@ const localOrigins = [
   "http://localhost:5500",
   "http://127.0.0.1:5500"
 ];
+
 const configuredOrigins = (process.env.FRONTEND_ORIGIN || "")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
+
 const allowedOrigins = new Set([...configuredOrigins, ...localOrigins]);
+
 const corsOptions = {
   origin(origin, callback) {
     if (!origin || allowedOrigins.has(origin)) {
       return callback(null, true);
     }
-
     return callback(new Error("Origen no permitido por CORS."));
   },
   credentials: true
@@ -44,6 +46,7 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
+// 🔹 RUTAS
 app.use("/login", authRoutes);
 app.use("/api/login", authRoutes);
 
@@ -57,17 +60,23 @@ app.use("/api/ventas", requireAuth, ventasRoutes);
 app.use("/api/dashboard", requireAuth, dashboardRoutes);
 app.use("/api/productos", requireAuth, productosRoutes);
 
+// 🔹 RUTA PRINCIPAL
 app.get(["/", "/admin"], (req, res) => {
   res.sendFile(path.join(publicPath, "index.html"));
 });
 
-app.use((req, res) => {
-  res.status(404).json({ message: "Ruta no encontrada." });
+// 🔥 SOLUCIÓN AL "NOT FOUND" (IMPORTANTE)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(publicPath, "index.html"));
 });
 
+// 🔹 MANEJO DE ERRORES
 app.use((error, req, res, next) => {
   const status = error.status || 500;
-  const message = status === 500 ? "No se pudo completar la accion." : error.message;
+  const message =
+    status === 500
+      ? "No se pudo completar la accion."
+      : error.message;
 
   if (status === 500) {
     console.error(error);
@@ -76,6 +85,7 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message });
 });
 
+// 🔹 SERVER
 app.listen(port, () => {
   console.log(`Sistema de gimnasio listo en http://localhost:${port}`);
 });
