@@ -1,0 +1,19 @@
+{
+  "name": "gimnasio-admin-pos",
+  "version": "1.0.0",
+  "description": "Sistema web de gestion para gimnasio con clientes, membresias y ventas rapidas.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed:admin": "node scripts/create-admin.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.11.5"
+  }
+}
