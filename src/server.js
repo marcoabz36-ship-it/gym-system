@@ -30,7 +30,11 @@ const allowedOrigins = new Set([...configuredOrigins, ...localOrigins]);
 
 const corsOptions = {
   origin(origin, callback) {
-    if (!origin || allowedOrigins.has(origin)) {
+    if (
+      !origin ||
+      allowedOrigins.has(origin) ||
+      origin.includes("onrender.com")
+    ) {
       return callback(null, true);
     }
     return callback(new Error("Origen no permitido por CORS."));
