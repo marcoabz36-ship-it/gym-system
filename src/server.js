@@ -72,17 +72,12 @@ app.get("*", (req, res) => {
 
 // 🔹 MANEJO DE ERRORES
 app.use((error, req, res, next) => {
-  const status = error.status || 500;
-  const message =
-    status === 500
-      ? "No se pudo completar la accion."
-      : error.message;
+  console.error("🔥 ERROR REAL:", error);
 
-  if (status === 500) {
-    console.error(error);
-  }
-
-  res.status(status).json({ message });
+  res.status(500).json({
+    message: error.message,
+    stack: error.stack
+  });
 });
 
 // 🔹 SERVER
